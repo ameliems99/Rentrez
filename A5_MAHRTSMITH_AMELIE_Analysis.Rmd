@@ -1,0 +1,42 @@
+---
+output:
+  html_document: default
+---
+# *Borrelia burgdorferi*
+```{r}
+Sequences <- read.csv("./A5_MAHRTSMITH_AMELIE_Sequences.csv")
+
+#first, create some empty vectors for output
+SequenceID <- NULL
+A <- NULL
+T <- NULL
+C <- NULL
+G <- NULL
+GCcontent <- NULL
+
+for (i in 1:nrow(Sequences)){
+  SequenceID <- c(SequenceID, gsub(">(\\w+\\.\\d).*", "\\1", Sequences$Name[i]))
+  cat(SequenceID[i], "has the sequence:\n", Sequences$Sequence[i], "\n")  #print each sequence
+  A <- c(A, nchar(gsub("[TCG]", "", Sequences$Sequence[i])))  #number of A's in each sequence
+  T <- c(T, nchar(gsub("[ACG]", "", Sequences$Sequence[i])))  #number of T's in each sequence
+  C <- c(C, nchar(gsub("[ATG]", "", Sequences$Sequence[i])))  #number of C's in each sequence
+  G <- c(G, nchar(gsub("[ATC]", "", Sequences$Sequence[i])))  #number of G's in each sequence
+  GCcontent <- c(GCcontent, paste(round(((C[i] + G[i])/(A[i] + T[i] + C[i] + G[i]))*100, 2), "%"))  #percentage of sequence that is G or C
+}  
+```
+
+```{r echo = FALSE}
+library(knitr)  #for making tables
+Nucleotides <- data.frame("Sequence ID" = SequenceID, "A" = A, "T" = T, "C" = C, "G" = G, check.names = FALSE)
+kable(Nucleotides, caption = "**Table 1.** The number of nucleotides in each sequence.")  #kable() outputs a clean table
+
+GCTable <- data.frame("Sequence ID" = SequenceID, "GC Content" = GCcontent, check.names = FALSE)
+kable(GCTable, caption = "**Table 2.** The percentage of each sequence that contains G or C.")
+```
+
+
+![*Borrelia burgdorferi*. Image retrieved from Bay Area Lyme](./borrelia-burgdorferi.jpg)  
+**Image:** The spirochete bacterium *Borrelia burgdorferi* that causes Lyme disease.   
+Source: [Bay Area Lyme Foundation](https://www.bayarealyme.org/about-lyme/what-causes-lyme-disease/borrelia-burgdorferi/)    
+    
+To learn more about *B. burgdorferi*, visit the [Wikipedia page](https://en.wikipedia.org/wiki/Borrelia_burgdorferi).
